@@ -1,0 +1,7 @@
+project_id = "kafr-el-sheikh-wishes"
+
+[functions.create-order]
+verify_jwt = true
+
+[functions.order-status]
+verify_jwt = true

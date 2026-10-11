@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#03080f">
+<meta name="description" content="ألف أمنية تفتح باب النور في كفر الشيخ. اكتب أمنيتك وساهم في فتح الباب.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Kafr El-Sheikh Wishes">
+<meta property="og:description" content="ألف أمنية تفتح باب النور في كفر الشيخ.">
+<meta property="og:image" content="https://YOUR_DOMAIN/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Kafr El-Sheikh Wishes">
+<meta name="twitter:description" content="ألف أمنية تفتح باب النور في كفر الشيخ.">
+<meta name="twitter:image" content="https://YOUR_DOMAIN/og-image.png">
+<title>Kafr El-Sheikh Wishes</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://YOUR_DOMAIN/">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<canvas id="c" aria-label="باب النور وألف أمنية حواليه"></canvas>
+<header>
+  <h1>Kafr El-Sheikh Wishes</h1>
+  <p class="sub">ألف أمنية تفتح باب النور</p>
+  <div class="cnt"><div class="d"><b id="n">000</b><span class="t">/ 1,000</span></div><p id="left"></p></div>
+</header>
+<button id="snd" aria-label="الصوت">♪</button>
+<p id="network-message" class="notice network" role="status" hidden></p>
+<div id="fin"><h2>ألف مفتاح لباب واحد</h2><button id="back">اقفل الباب</button></div>
+<div class="bar">
+  
+  <button class="add" id="add">اكتب أمنيتك</button>
+  <button class="pvb" id="pvb">شوف لحظة فتح الباب</button>
+</div>
+<div id="sheet" role="dialog" aria-modal="true" aria-label="نافذة الأمنية والدفع">
+  <button class="x" id="x" aria-label="إغلاق">×</button>
+  <div id="read" hidden>
+    <span class="tag"><i id="rc"></i><span id="rk"></span> · نجمة <span id="rn"></span></span>
+    <p class="wish" id="rt"></p><p class="by" id="rb"></p>
+  </div>
+  <div id="write" hidden>
+    <p class="lbl">اكتب أمنيتك وخلّيها تنوّر الباب</p>
+    <textarea id="wt" maxlength="140" placeholder="أتمنى..." aria-label="نص الأمنية"></textarea>
+    <p class="lbl" style="font-size:14px;margin:0 0 8px">اختار لون أمنيتك</p><div class="tiers" id="wc"></div>
+    <input id="wn" maxlength="30" placeholder="اسمك" aria-label="اسمك"><input id="wp" inputmode="tel" maxlength="11" placeholder="رقم فودافون كاش اللي هتحوّل منه" aria-label="رقم فودافون كاش الذي ستحول منه">
+    <input id="website" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <p id="api-message" class="notice" role="alert" hidden></p>
+    <button class="go" id="go" disabled>تابع للدفع</button>
+  </div>
+  <div id="pay" hidden><p class="lbl">وصلنا طلبك ✦</p><p class="pm">حوّل <b id="pa"></b> جنيه على فودافون كاش للرقم:</p><button class="pnum" id="pn">01028870568</button><p class="pm">من الرقم اللي كتبته (<span id="ps"></span>)، وكود طلبك <b id="pc"></b></p><p class="pm">أول ما طلبك يتأكد هتكون أمنيتك رقم <b id="pq"></b> على اللوحة، وهتظهر في المكان اللي شفتها رايحاله. <span style="color:var(--mute);font-size:13px">(الرقم بيتثبت لحظة تأكيد الدفع)</span></p><p id="tracking" class="note" role="status"></p><p class="note"><a href="/terms.html">الشروط والخصوصية</a></p><button class="go" id="pd">تمام</button></div>
+</div>
+<script type="module" src="/app.js"></script>
+</body>
+</html>

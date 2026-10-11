@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#03080f">
+  <title>إدارة الأمنيات | Kafr El-Sheikh Wishes</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body>
+  <main class="admin-shell">
+    <header class="topbar">
+      <div><p class="eyebrow">KAFR EL-SHEIKH WISHES</p><h1>إدارة الأمنيات</h1></div>
+      <button id="logout" class="quiet" type="button" hidden>تسجيل الخروج</button>
+    </header>
+
+    <section id="login" class="login" aria-labelledby="login-title">
+      <h2 id="login-title">دخول الإدارة</h2>
+      <form id="login-form">
+        <label for="email">البريد الإلكتروني</label>
+        <input id="email" type="email" autocomplete="username" required>
+        <label for="password">كلمة المرور</label>
+        <input id="password" type="password" autocomplete="current-password" required>
+        <button class="primary" type="submit">دخول</button>
+        <p id="login-message" class="message" role="status" hidden></p>
+      </form>
+    </section>
+
+    <section id="dashboard" hidden>
+      <p id="message" class="message" role="status" hidden></p>
+      <section class="metrics" aria-label="ملخص الطلبات">
+        <div><span>قيد الانتظار</span><b id="stat-pending">0</b></div>
+        <div><span>مؤكدة</span><b id="stat-confirmed">0 / 1,000</b></div>
+        <div><span>منتهية</span><b id="stat-expired">0</b></div>
+        <div><span>مرفوضة</span><b id="stat-rejected">0</b></div>
+        <div><span>طلبات اليوم</span><b id="stat-today">0</b></div>
+        <div class="revenue"><span>إيراد الألوان المؤكدة</span><b id="rev-0">فيروزي: 0 ج</b><b id="rev-1">ذهبي: 0 ج</b><b id="rev-2">أرجواني: 0 ج</b></div>
+      </section>
+
+      <div class="toolbar">
+        <div class="tabs" role="tablist" aria-label="حالة الطلب">
+          <button type="button" role="tab" data-status="pending" aria-selected="true">انتظار <span id="tab-pending">0</span></button>
+          <button type="button" role="tab" data-status="confirmed" aria-selected="false">مؤكدة <span id="tab-confirmed">0</span></button>
+          <button type="button" role="tab" data-status="expired" aria-selected="false">منتهية <span id="tab-expired">0</span></button>
+          <button type="button" role="tab" data-status="rejected" aria-selected="false">مرفوضة <span id="tab-rejected">0</span></button>
+        </div>
+        <div class="tools">
+          <label class="search"><span class="sr-only">بحث برقم الطلب أو الاسم أو رقم الهاتف</span><input id="search" type="search" placeholder="بحث بالكود أو الاسم أو الهاتف"></label>
+          <select id="sort" aria-label="ترتيب الطلبات"><option value="newest">الأحدث أولًا</option><option value="oldest">الأقدم أولًا</option></select>
+          <button id="export" type="button" class="quiet">تصدير CSV</button>
+          <button id="refresh" type="button" class="quiet" aria-label="تحديث البيانات">تحديث</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>الطلب</th><th>الاسم</th><th>الأمنية</th><th>اللون / السعر</th><th>رقم التحويل</th><th>الوقت / العمر</th><th>الموضع</th><th>الإجراءات والملاحظات</th></tr></thead>
+          <tbody id="orders"></tbody>
+        </table>
+        <p id="empty" class="empty" hidden>لا توجد طلبات في هذا التبويب.</p>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="/admin/admin.js"></script>
+</body>
+</html>

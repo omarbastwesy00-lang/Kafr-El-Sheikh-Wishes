@@ -1,0 +1,9 @@
+node_modules/
+dist/
+playwright-report/
+test-results/
+lighthouse-report.html
+backups/
+.env
+.env.*
+!.env.example
