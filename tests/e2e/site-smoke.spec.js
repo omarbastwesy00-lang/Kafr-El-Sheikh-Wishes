@@ -77,12 +77,23 @@ test('mobile visitor flow, admin confirmation, and live wish display', async ({ 
     return visible;
   })).toBeGreaterThan(1000);
   await expect(page.locator('#snd')).not.toHaveClass(/off/);
+  const soundAndTitle = await page.evaluate(() => {
+    const sound = document.querySelector('#snd').getBoundingClientRect();
+    const range = document.createRange();
+    range.selectNodeContents(document.querySelector('h1'));
+    const title = range.getBoundingClientRect();
+    return sound.right <= title.left || sound.left >= title.right || sound.bottom <= title.top || sound.top >= title.bottom;
+  });
+  expect(soundAndTitle).toBe(true);
 
   await page.getByRole('button', { name: 'اكتب أمنيتك' }).click();
   await page.locator('#wt').fill('أتمنى الخير لكل أهل بلدنا');
   await page.locator('#wn').fill('نور');
   await page.locator('#wp').fill('01012345678');
   await page.locator('#wc').locator('.tier').nth(1).click();
+  await expect(page.locator('#cash-price')).toHaveText('40');
+  await expect(page.locator('.cash-number')).toHaveText('01028870568');
+  await expect(page.locator('.pay-order-note')).toContainText('بعد تأكيد الدفع');
   await expect(page.locator('#go')).toBeEnabled();
   await page.locator('#go').click();
   await expect(page.locator('#pay')).toBeVisible();
@@ -111,6 +122,20 @@ test('mobile visitor flow, admin confirmation, and live wish display', async ({ 
   await expect(page.locator('#rt')).toContainText('أتمنى الخير لكل أهل بلدنا', { timeout: 14000 });
   expect(state.publicSeenAt - state.confirmedAt).toBeLessThanOrEqual(10000);
   await expect(page.getByRole('button', { name: 'شارك أمنيتك' })).toHaveCount(0);
+  await page.locator('#x').click();
+  const barTopBeforeSearch = await page.locator('.bar').evaluate((bar) => bar.getBoundingClientRect().top);
+  await page.locator('#search-toggle').click();
+  await expect(page.locator('#wish-search-form')).toBeVisible();
+  await page.locator('#wish-number').fill('١');
+  await page.locator('#wish-search-form button[type="submit"]').click();
+  await expect(page.locator('#rt')).toContainText('أتمنى الخير لكل أهل بلدنا');
+  const searchLayout = await page.evaluate(() => {
+    const bar = document.querySelector('.bar').getBoundingClientRect();
+    return { barTop: bar.top, viewportWidth: innerWidth, searchHidden: document.querySelector('.wish-search').hidden };
+  });
+  expect(searchLayout.barTop).toBe(barTopBeforeSearch);
+  expect(searchLayout.searchHidden).toBe(true);
+  expect(searchLayout.viewportWidth).toBe(390);
   expect(pageErrors).toEqual([]);
   await context.close();
 });

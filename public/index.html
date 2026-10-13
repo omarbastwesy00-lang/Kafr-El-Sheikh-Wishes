@@ -32,7 +32,15 @@
 <p id="network-message" class="notice network" role="status" hidden></p>
 <div id="fin"><h2>ألف مفتاح لباب واحد</h2><button id="back">اقفل الباب</button></div>
 <div class="bar">
-  
+  <button id="search-toggle" class="search-toggle" type="button" aria-label="بحث عن أمنية" aria-expanded="false" aria-controls="wish-search-form" title="بحث عن أمنية">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 4.5 4.5"></path></svg>
+  </button>
+  <form id="wish-search-form" class="wish-search" role="search" autocomplete="off" hidden>
+    <label class="visually-hidden" for="wish-number">ابحث عن أمنية برقمها</label>
+    <input id="wish-number" type="text" inputmode="numeric" maxlength="4" placeholder="رقم الأمنية" aria-label="رقم الأمنية للبحث">
+    <button type="submit" aria-label="بحث عن أمنية برقمها">ابحث</button>
+    <p id="wish-search-message" class="search-message" role="status" hidden></p>
+  </form>
   <button class="add" id="add">اكتب أمنيتك</button>
   <button class="pvb" id="pvb">شوف لحظة فتح الباب</button>
 </div>
@@ -46,6 +54,11 @@
     <p class="lbl">اكتب أمنيتك وخلّيها تنوّر الباب</p>
     <textarea id="wt" maxlength="140" placeholder="أتمنى..." aria-label="نص الأمنية"></textarea>
     <p class="lbl" style="font-size:14px;margin:0 0 8px">اختار لون أمنيتك</p><div class="tiers" id="wc"></div>
+    <div class="pay-instructions" aria-live="polite">
+      <p>حوّل <b id="cash-price">20</b> جنيه فودافون كاش إلى</p>
+      <bdi class="cash-number" dir="ltr">01028870568</bdi>
+      <p class="pay-order-note">بعد تأكيد الدفع، تظهر أمنيتك على اللوحة في النجمة المخصصة لها حسب ترتيب التأكيد.</p>
+    </div>
     <input id="wn" maxlength="30" placeholder="اسمك" aria-label="اسمك"><input id="wp" inputmode="tel" maxlength="11" placeholder="رقم فودافون كاش اللي هتحوّل منه" aria-label="رقم فودافون كاش الذي ستحول منه">
     <input id="website" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
     <p id="api-message" class="notice" role="alert" hidden></p>

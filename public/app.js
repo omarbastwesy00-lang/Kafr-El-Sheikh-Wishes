@@ -27,7 +27,7 @@ function saveOrders(){try{localStorage.setItem("kfsOrderCodes",JSON.stringify(or
 async function invokeEdge(name,body){if(!supabase)throw new Error("configuration_missing");var result=await supabase.functions.invoke(name,{body:body});if(result.error){var details=null,response=result.error.context;if(response&&typeof response.clone==="function"){try{details=await response.clone().json()}catch(e){}}if(details&&typeof details.error==="string")throw new Error(details.error);throw result.error}return result.data}
 var API={order:async function(o){var data=await invokeEdge("create-order",o);if(!data||!data.code)throw new Error("invalid_response");return data},status:async function(code){return invokeEdge("order-status",{code:code})},list:async function(){if(!supabase)throw new Error("configuration_missing");var result=await supabase.rpc("get_public_wishes");if(result.error)throw result.error;return result.data||[]}};
 var cv=document.getElementById("c"),cx=cv.getContext("2d"),W,H,dpr,U,gx,gy,t0=performance.now(),last=t0,
-filt=-1,sel=-1,fly=null,fin=null,pulse=-1e9,sparks=[],par={x:0,y:0,tx:0,ty:0},snd=true,ac,wcat=0,
+filt=-1,sel=-1,searchHighlight=-1,searchHighlightUntil=0,fly=null,fin=null,pulse=-1e9,sparks=[],par={x:0,y:0,tx:0,ty:0},snd=true,ac,wcat=0,
 reduce=matchMedia("(prefers-reduced-motion:reduce)").matches,openedReal=false;
 var spr=CATS.map(function(c){var k=document.createElement("canvas");k.width=k.height=64;var g=k.getContext("2d"),d=g.createRadialGradient(32,32,0,32,32,32);
  d.addColorStop(0,"#fff");d.addColorStop(.16,c[2]);d.addColorStop(.45,c[2]+"55");d.addColorStop(1,c[2]+"00");g.fillStyle=d;g.fillRect(0,0,64,64);return k});
@@ -99,6 +99,7 @@ function draw(now){if(now-lastT<24){requestAnimationFrame(draw);return}var fd=no
   }
  cx.globalAlpha=1;
  if(sel>=0){s=slots[sel];cx.strokeStyle="#6fd8cb";cx.lineWidth=1.6;cx.beginPath();cx.arc(s.px,s.py,10+3*Math.sin(now/280),0,6.283);cx.stroke()}
+ if(searchHighlight>=0&&now<searchHighlightUntil){s=slots[searchHighlight];cx.strokeStyle="#fff0c7";cx.lineWidth=2.5;cx.globalAlpha=.75+.25*Math.sin(now/110);cx.beginPath();cx.arc(s.px,s.py,15+3*Math.sin(now/150),0,6.283);cx.stroke();cx.globalAlpha=1}else if(searchHighlight>=0)searchHighlight=-1;
  if(fly){var p=Math.min(1,(now-fly.t0)/1400),T=slots[fly.i];
   for(var z=0;z<10;z++){var qq=Math.max(0,p-z*.024),e=ease(qq),fx=gx+(T.px-gx)*e+Math.sin(qq*6)*30*(1-qq),fy=H+20+(T.py-H-20)*e;cx.globalAlpha=.9-z*.08;cx.drawImage(spr[fly.c],fx-14+z,fy-14+z,28-z*2,28-z*2)}
   cx.globalAlpha=1;
@@ -114,7 +115,7 @@ function draw(now){if(now-lastT<24){requestAnimationFrame(draw);return}var fd=no
  if(fin){var fl=f<1300?0:f<1500?(f-1300)/200:Math.max(0,1-(f-1500)/1500);if(o>.5)fl=Math.max(fl,(o-.5)*.9);if(fl>0){cx.fillStyle="rgba(255,248,226,"+fl+")";cx.fillRect(0,0,W,H)}
   if(f>5000&&!fin.sh){fin.sh=1;document.getElementById("fin").classList.add("on")}}
  counter(el);requestAnimationFrame(draw)}
-var sheet=document.getElementById("sheet"),rd=document.getElementById("read"),wr=document.getElementById("write"),wt=document.getElementById("wt"),wn=document.getElementById("wn"),wp=document.getElementById("wp"),go=document.getElementById("go");
+var sheet=document.getElementById("sheet"),rd=document.getElementById("read"),wr=document.getElementById("write"),wt=document.getElementById("wt"),wn=document.getElementById("wn"),wp=document.getElementById("wp"),go=document.getElementById("go"),cashPrice=document.getElementById("cash-price"),searchToggle=document.getElementById("search-toggle"),searchForm=document.getElementById("wish-search-form"),searchInput=document.getElementById("wish-number"),searchMessage=document.getElementById("wish-search-message"),searchButton=searchForm.querySelector("button[type=submit]");
 var py=document.getElementById("pay");function open(m){rd.hidden=m!=="read";wr.hidden=m!=="write";py.hidden=m!=="pay";sheet.classList.add("open")}
 function close(){sheet.classList.remove("open");sel=-1;setTimeout(startMineFlight,450)}
 function showRead(i){var w=slots[i].w;sel=-1;document.getElementById("rt").textContent="“"+w.t+"”";document.getElementById("rb").textContent=w.n?"— "+w.n:"";
@@ -138,13 +139,23 @@ cv.addEventListener("pointermove",function(e){par.tx=(e.clientX/W-.5)*2;par.ty=(
 cv.addEventListener("pointerup",function(e){delete PT[e.pointerId];if(!st||fin)return;if(Math.hypot(e.clientX-st.x,e.clientY-st.y)<10&&performance.now()-st.t<700){var i=near(e.clientX,e.clientY);if(i<0)close();else if(slots[i].w)showRead(i)}st=null});
 document.getElementById("add").onclick=function(){compose()};
 document.getElementById("x").onclick=close;
-addEventListener("keydown",function(e){if(e.key==="Escape")close()});
+addEventListener("keydown",function(e){if(e.key==="Escape"){if(!searchForm.hidden)hideWishSearch();else close()}});
 function chips(box,all,fn,init){box.innerHTML="";(all?[["all","الكل","#ffffff"]]:[]).concat(CATS).forEach(function(c,j){var b=document.createElement("button");b.className="chip";b.style.setProperty("--c",c[2]);b.innerHTML="<i></i>"+c[1];var idx=all?j-1:j;
  b.onclick=function(){fn(idx);[].forEach.call(box.children,function(x){x.classList.remove("on")});b.classList.add("on")};if(idx===init)b.classList.add("on");box.appendChild(b)})}
-(function(){var b=document.getElementById("wc");CATS.forEach(function(c,j){var e=document.createElement("button");e.className="tier"+(j===0?" on":"");e.style.setProperty("--c",c[2]);var z=c[4]*14;e.innerHTML="<i style='width:"+z+"px;height:"+z+"px'></i><b>"+c[1]+"</b><span>"+c[3]+" جنيه</span>";e.onclick=function(){wcat=j;[].forEach.call(b.children,function(x){x.classList.remove("on")});e.classList.add("on")};b.appendChild(e)})})();
+(function(){var b=document.getElementById("wc");CATS.forEach(function(c,j){var e=document.createElement("button");e.className="tier"+(j===0?" on":"");e.style.setProperty("--c",c[2]);var z=c[4]*14;e.innerHTML="<i style='width:"+z+"px;height:"+z+"px'></i><b>"+c[1]+"</b><span>"+c[3]+" جنيه</span>";e.onclick=function(){wcat=j;cashPrice.textContent=String(c[3]);[].forEach.call(b.children,function(x){x.classList.remove("on")});e.classList.add("on")};b.appendChild(e)})})();
 [wt,wn,wp].forEach(function(e){e.addEventListener("input",updateForm)});
 function updateForm(){go.disabled=submitting||openedReal||!(wt.value.trim().length>=3&&wt.value.trim().length<=140&&wn.value.trim().length>=2&&wn.value.trim().length<=30&&/^01[0125]\d{8}$/.test(wp.value.trim()))}
 function setNotice(el,text){if(!el)return;el.textContent=text;el.hidden=!text}
+async function searchWish(event){event.preventDefault();setNotice(searchMessage,"");var raw=searchInput.value.trim().replace(/[٠-٩]/g,function(d){return String("٠١٢٣٤٥٦٧٨٩".indexOf(d))}).replace(/[۰-۹]/g,function(d){return String("۰۱۲۳۴۵۶۷۸۹".indexOf(d))});var no=Number(raw);
+ if(!/^\d{1,4}$/.test(raw)||!Number.isInteger(no)||no<1||no>TOTAL){setNotice(searchMessage,"اكتب رقمًا صحيحًا من 1 إلى 1,000.");return}
+ searchButton.disabled=true;
+ try{var wishes=await API.list(),wish=wishes.filter(function(item){return Number(item.no)===no})[0];if(!wish){setNotice(searchMessage,"لا توجد أمنية مؤكدة بهذا الرقم حتى الآن.");return}
+  var index=perm[no-1],slot=slots[index];if(!slot.w){put(no,wish.wish,wish.name,Number(wish.color));slot.born=performance.now();pulse=slot.born;updateClosed()}
+  searchHighlight=index;searchHighlightUntil=performance.now()+5500;hideWishSearch();showRead(index)
+ }catch(error){setNotice(searchMessage,describeError(error))}finally{searchButton.disabled=false}}
+function hideWishSearch(){searchForm.hidden=true;searchToggle.setAttribute("aria-expanded","false");setNotice(searchMessage,"")}
+searchToggle.addEventListener("click",function(){var opening=searchForm.hidden;searchForm.hidden=!opening;searchToggle.setAttribute("aria-expanded",String(opening));setNotice(searchMessage,"");if(opening)searchInput.focus()});
+searchForm.addEventListener("submit",searchWish);searchInput.addEventListener("input",function(){setNotice(searchMessage,"")});
 function updateClosed(){openedReal=total()>=TOTAL;var addButton=document.getElementById("add");addButton.disabled=openedReal;addButton.textContent=openedReal?"الباب مفتوح واكتمل العدد":"اكتب أمنيتك";updateForm()}
 function describeError(error){var message=String(error&&error.message||error||"").toLowerCase();if(message.indexOf("configuration_missing")>=0)return"إعدادات Supabase غير موجودة. أضف VITE_SUPABASE_URL وVITE_SUPABASE_ANON_KEY إلى .env ثم أعد تشغيل الموقع أو أعد بناءه.";if(message.indexOf("database_schema_missing")>=0||message.indexOf("pgrst202")>=0||message.indexOf("schema cache")>=0)return"قاعدة بيانات Supabase غير مجهزة بعد. طبّق ملفات الترحيل بالأمر npx supabase db push ثم أعد المحاولة.";if(message.indexOf("backend_not_configured")>=0)return"إعدادات خدمة الطلبات ناقصة على Supabase. راجع SUPABASE_URL وSUPABASE_SERVICE_ROLE_KEY وRATE_LIMIT_SALT في أسرار Edge Functions.";if(message.indexOf("function_not_found")>=0||message.indexOf("404")>=0)return"خدمة إنشاء الطلبات غير منشورة. انشر Edge Function باسم create-order على Supabase.";if(message.indexOf("ordering_closed")>=0)return"اكتمل عدد الأمنيات، باب النور مفتوح.";if(message.indexOf("rate_limited")>=0)return"وصلت لحد الطلبات المسموح به. حاول لاحقًا.";if(message.indexOf("invalid_")>=0)return"راجع نص الأمنية والاسم ورقم فودافون كاش ثم حاول مرة أخرى.";if(message.indexOf("fetch")>=0||message.indexOf("network")>=0||message.indexOf("cors")>=0)return"تعذّر الاتصال بخدمة الطلبات. تحقق من الإنترنت ورابط Supabase والنطاقات المسموحة في إعداد CORS.";return"رفضت خدمة الطلبات إنشاء الطلب. راجع نشر create-order وإعدادات Supabase، ثم حاول مرة أخرى."}
 var submitting=false,website=document.getElementById("website"),mineQueue=[];
