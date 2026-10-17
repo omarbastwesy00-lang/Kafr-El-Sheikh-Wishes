@@ -19,9 +19,11 @@ Deno.serve(async (request: Request) => {
 
     const name = typeof body.name === 'string' ? body.name : '';
     const wish = typeof body.wish === 'string' ? body.wish : '';
+    const governorate = typeof body.governorate === 'string' ? body.governorate : '';
     const color = body.color;
     const phone = typeof body.phone === 'string' ? body.phone : '';
     if (name.trim().length < 2 || name.trim().length > 30 || wish.trim().length < 3 || wish.trim().length > 140
+      || governorate.trim().length < 2 || governorate.trim().length > 40
       || typeof color !== 'number' || !Number.isInteger(color) || color < 0 || color > 2 || !phonePattern.test(phone.trim())) {
       return jsonResponse(origin, { error: 'invalid_input' }, 400);
     }
@@ -54,7 +56,7 @@ Deno.serve(async (request: Request) => {
     if (!url || !serviceKey) throw new Error('backend_not_configured');
     const supabase = createClient(url, serviceKey, { auth: { persistSession: false, autoRefreshToken: false } });
     const { data, error } = await supabase.rpc('create_order', {
-      p_name: name.trim(), p_wish: wish.trim(), p_color: color, p_phone: phone.trim(), p_ip_hash: ipHash
+      p_name: name.trim(), p_wish: wish.trim(), p_governorate: governorate.trim(), p_color: color, p_phone: phone.trim(), p_ip_hash: ipHash
     }).single();
     if (error) {
       const message = error.message ?? '';

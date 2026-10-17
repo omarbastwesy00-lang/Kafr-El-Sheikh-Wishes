@@ -7,7 +7,7 @@ import '@fontsource/cormorant-garamond/600-italic.css';
 var backendUrl=import.meta.env.VITE_SUPABASE_URL||"",backendKey=import.meta.env.VITE_SUPABASE_ANON_KEY||"";
 var supabase=backendUrl&&backendKey?createClient(backendUrl,backendKey,{auth:{persistSession:true,autoRefreshToken:true}}):null;
 (function(){
-var TOTAL=1000,CATS=[["a","فيروزي","#6fd8cb",20,.85],["b","ذهبي","#f4c874",40,1],["c","أرجواني","#c79bff",60,1.15]];
+var TOTAL=1000,CATS=[["a","فيروزي","#6fd8cb",100,.85],["b","ذهبي","#f4c874",100,1],["c","أرجواني","#c79bff",100,1.15]];
 function rng(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 var PI=Math.PI,a0=.5,h0=.9,RN=8,Ls=[],sumL=0,k,j,slots=[],dust=[],r=rng(77);
 for(k=0;k<RN;k++){Ls.push(2*h0+PI*(a0+.1+k*.093));sumL+=Ls[k]}
@@ -116,6 +116,8 @@ function draw(now){if(now-lastT<24){requestAnimationFrame(draw);return}var fd=no
   if(f>5000&&!fin.sh){fin.sh=1;document.getElementById("fin").classList.add("on")}}
  counter(el);requestAnimationFrame(draw)}
 var sheet=document.getElementById("sheet"),rd=document.getElementById("read"),wr=document.getElementById("write"),wt=document.getElementById("wt"),wn=document.getElementById("wn"),wp=document.getElementById("wp"),go=document.getElementById("go"),cashPrice=document.getElementById("cash-price"),searchToggle=document.getElementById("search-toggle"),searchForm=document.getElementById("wish-search-form"),searchInput=document.getElementById("wish-number"),searchMessage=document.getElementById("wish-search-message"),searchButton=searchForm.querySelector("button[type=submit]");
+var governorateInput=document.getElementById("governorate"),governorateStrip=document.getElementById("governorate-strip"),governorateOptions=document.getElementById("governorate-options"),governorateNames=["القاهرة","الإسكندرية","بورسعيد","السويس","دمياط","الدقهلية","الشرقية","القليوبية","كفر الشيخ","الغربية","المنوفية","البحيرة","الإسماعيلية","الجيزة","بني سويف","الفيوم","المنيا","أسيوط","سوهاج","قنا","أسوان","الأقصر","البحر الأحمر","الوادي الجديد","مطروح","شمال سيناء","جنوب سيناء"];
+governorateNames.forEach(function(name){var option=document.createElement("option"),choice=document.createElement("button");option.value=name;governorateOptions.appendChild(option);choice.type="button";choice.className="governorate-choice";choice.textContent=name;choice.setAttribute("aria-pressed","false");choice.addEventListener("click",function(){governorateInput.value=name;updateForm();governorateInput.focus()});governorateStrip.appendChild(choice)});
 var py=document.getElementById("pay");function open(m){rd.hidden=m!=="read";wr.hidden=m!=="write";py.hidden=m!=="pay";sheet.classList.add("open")}
 function close(){sheet.classList.remove("open");sel=-1;setTimeout(startMineFlight,450)}
 function showRead(i){var w=slots[i].w;sel=-1;document.getElementById("rt").textContent="“"+w.t+"”";document.getElementById("rb").textContent=w.n?"— "+w.n:"";
@@ -143,8 +145,8 @@ addEventListener("keydown",function(e){if(e.key==="Escape"){if(!searchForm.hidde
 function chips(box,all,fn,init){box.innerHTML="";(all?[["all","الكل","#ffffff"]]:[]).concat(CATS).forEach(function(c,j){var b=document.createElement("button");b.className="chip";b.style.setProperty("--c",c[2]);b.innerHTML="<i></i>"+c[1];var idx=all?j-1:j;
  b.onclick=function(){fn(idx);[].forEach.call(box.children,function(x){x.classList.remove("on")});b.classList.add("on")};if(idx===init)b.classList.add("on");box.appendChild(b)})}
 (function(){var b=document.getElementById("wc");CATS.forEach(function(c,j){var e=document.createElement("button");e.className="tier"+(j===0?" on":"");e.style.setProperty("--c",c[2]);var z=c[4]*14;e.innerHTML="<i style='width:"+z+"px;height:"+z+"px'></i><b>"+c[1]+"</b><span>"+c[3]+" جنيه</span>";e.onclick=function(){wcat=j;cashPrice.textContent=String(c[3]);[].forEach.call(b.children,function(x){x.classList.remove("on")});e.classList.add("on")};b.appendChild(e)})})();
-[wt,wn,wp].forEach(function(e){e.addEventListener("input",updateForm)});
-function updateForm(){go.disabled=submitting||openedReal||!(wt.value.trim().length>=3&&wt.value.trim().length<=140&&wn.value.trim().length>=2&&wn.value.trim().length<=30&&/^01[0125]\d{8}$/.test(wp.value.trim()))}
+[wt,wn,wp,governorateInput].forEach(function(e){e.addEventListener("input",updateForm)});
+function updateForm(){var selectedGovernorate=governorateInput.value.trim(),validGovernorate=governorateNames.indexOf(selectedGovernorate)!==-1;[].forEach.call(governorateStrip.children,function(choice){var selected=choice.textContent===selectedGovernorate;choice.classList.toggle("selected",selected);choice.setAttribute("aria-pressed",String(selected))});go.disabled=submitting||openedReal||!(wt.value.trim().length>=3&&wt.value.trim().length<=140&&wn.value.trim().length>=2&&wn.value.trim().length<=30&&validGovernorate&&/^01[0125]\d{8}$/.test(wp.value.trim()))}
 function setNotice(el,text){if(!el)return;el.textContent=text;el.hidden=!text}
 async function searchWish(event){event.preventDefault();setNotice(searchMessage,"");var raw=searchInput.value.trim().replace(/[٠-٩]/g,function(d){return String("٠١٢٣٤٥٦٧٨٩".indexOf(d))}).replace(/[۰-۹]/g,function(d){return String("۰۱۲۳۴۵۶۷۸۹".indexOf(d))});var no=Number(raw);
  if(!/^\d{1,4}$/.test(raw)||!Number.isInteger(no)||no<1||no>TOTAL){setNotice(searchMessage,"اكتب رقمًا صحيحًا من 1 إلى 1,000.");return}
@@ -160,7 +162,7 @@ function updateClosed(){openedReal=total()>=TOTAL;var addButton=document.getElem
 function describeError(error){var message=String(error&&error.message||error||"").toLowerCase();if(message.indexOf("configuration_missing")>=0)return"إعدادات Supabase غير موجودة. أضف VITE_SUPABASE_URL وVITE_SUPABASE_ANON_KEY إلى .env ثم أعد تشغيل الموقع أو أعد بناءه.";if(message.indexOf("database_schema_missing")>=0||message.indexOf("pgrst202")>=0||message.indexOf("schema cache")>=0)return"قاعدة بيانات Supabase غير مجهزة بعد. طبّق ملفات الترحيل بالأمر npx supabase db push ثم أعد المحاولة.";if(message.indexOf("backend_not_configured")>=0)return"إعدادات خدمة الطلبات ناقصة على Supabase. راجع SUPABASE_URL وSUPABASE_SERVICE_ROLE_KEY وRATE_LIMIT_SALT في أسرار Edge Functions.";if(message.indexOf("function_not_found")>=0||message.indexOf("404")>=0)return"خدمة إنشاء الطلبات غير منشورة. انشر Edge Function باسم create-order على Supabase.";if(message.indexOf("ordering_closed")>=0)return"اكتمل عدد الأمنيات، باب النور مفتوح.";if(message.indexOf("rate_limited")>=0)return"وصلت لحد الطلبات المسموح به. حاول لاحقًا.";if(message.indexOf("invalid_")>=0)return"راجع نص الأمنية والاسم ورقم فودافون كاش ثم حاول مرة أخرى.";if(message.indexOf("fetch")>=0||message.indexOf("network")>=0||message.indexOf("cors")>=0)return"تعذّر الاتصال بخدمة الطلبات. تحقق من الإنترنت ورابط Supabase والنطاقات المسموحة في إعداد CORS.";return"رفضت خدمة الطلبات إنشاء الطلب. راجع نشر create-order وإعدادات Supabase، ثم حاول مرة أخرى."}
 var submitting=false,website=document.getElementById("website"),mineQueue=[];
 go.onclick=async function(){if(submitting||go.disabled)return;submitting=true;go.disabled=true;go.textContent="جاري إرسال الطلب...";setNotice(apiMessage,"");setNotice(networkMessage,"");
- try{var order=await API.order({name:wn.value.trim(),wish:wt.value.trim(),color:wcat,phone:wp.value.trim(),website:website.value});order.phone=wp.value.trim();order.color=wcat;
+ try{var order=await API.order({name:wn.value.trim(),wish:wt.value.trim(),governorate:governorateInput.value.trim(),color:wcat,phone:wp.value.trim(),website:website.value});order.phone=wp.value.trim();order.color=wcat;
   orderCodes.push({code:order.code,no:null,status:"pending",shown:false});if(orderCodes.length>20)orderCodes=orderCodes.slice(-20);saveOrders();activeOrderCode=order.code;showPay(order)
  }catch(error){setNotice(apiMessage,describeError(error));setNotice(networkMessage,describeError(error))}
  finally{submitting=false;go.textContent="تابع للدفع";updateForm()}};
@@ -189,7 +191,8 @@ async function sync(){
 }
 window.addEventListener("offline",function(){setNotice(networkMessage,"أنت غير متصل بالإنترنت. ستعود المزامنة عند الاتصال.")});window.addEventListener("online",function(){setNotice(networkMessage,"");sync()});
 setInterval(sync,10000);sync();
-document.getElementById("pn").onclick=function(){var b=this;try{navigator.clipboard.writeText("01028870568");b.textContent="تم النسخ ✓";setTimeout(function(){b.textContent="01028870568"},1500)}catch(e){}};
+document.getElementById("copy-cash").onclick=function(){var button=this,reset=function(){button.classList.remove("copied");button.setAttribute("aria-label","نسخ رقم فودافون كاش");button.title="نسخ رقم فودافون كاش"};navigator.clipboard.writeText(document.querySelector(".cash-number").textContent.trim()).then(function(){button.classList.add("copied");button.setAttribute("aria-label","تم نسخ الرقم");button.title="تم نسخ الرقم";setTimeout(reset,1500)}).catch(function(){button.setAttribute("aria-label","تعذر نسخ الرقم");button.title="تعذر نسخ الرقم";setTimeout(reset,1500)})};
+document.getElementById("pn").onclick=function(){var b=this;try{navigator.clipboard.writeText("01043668450");b.textContent="تم النسخ ✓";setTimeout(function(){b.textContent="01043668450"},1500)}catch(e){}};
 document.getElementById("pd").onclick=close;
 addEventListener("pointerdown",function(e){if(snd&&e.target.id!=="snd")chime(523)},{once:true,capture:true});
 document.getElementById("snd").onclick=function(){snd=!snd;this.classList.toggle("off",!snd);chime(523)};

@@ -32,8 +32,8 @@ test('mobile visitor flow, admin confirmation, and live wish display', async ({ 
       state.createBody = request.postDataJSON();
       state.order = {
         id: 'order-1', code: 'KS-1A2B3C4D5E', name: state.createBody.name,
-        wish: state.createBody.wish, color: state.createBody.color, price: 40,
-        sender_phone: state.createBody.phone, status: 'pending', no: null,
+        wish: state.createBody.wish, color: state.createBody.color, price: 100,
+        sender_phone: state.createBody.phone, governorate: state.createBody.governorate, status: 'pending', no: null,
         created_at: new Date().toISOString(), admin_note: null
       };
       return route.fulfill(json({ code: state.order.code, price: state.order.price, pos: 1 }, cors));
@@ -54,7 +54,7 @@ test('mobile visitor flow, admin confirmation, and live wish display', async ({ 
       return route.fulfill(json(state.order ? [{ ...state.order, status: state.confirmed ? 'confirmed' : 'pending', no: state.confirmed ? 1 : null }] : [], cors));
     }
     if (url.pathname === '/rest/v1/rpc/admin_stats') {
-      return route.fulfill(json({ pending: state.confirmed ? 0 : 1, confirmed: state.confirmed ? 1 : 0, expired: 0, rejected: 0, today: 1, revenue: { '0': 0, '1': state.confirmed ? 40 : 0, '2': 0 } }, cors));
+      return route.fulfill(json({ pending: state.confirmed ? 0 : 1, confirmed: state.confirmed ? 1 : 0, expired: 0, rejected: 0, today: 1, revenue: { '0': 0, '1': state.confirmed ? 100 : 0, '2': 0 } }, cors));
     }
     if (url.pathname === '/rest/v1/rpc/confirm_order') {
       state.confirmed = true;
@@ -68,7 +68,7 @@ test('mobile visitor flow, admin confirmation, and live wish display', async ({ 
   const pageErrors = [];
   page.on('pageerror', (error) => pageErrors.push(error.message));
   await page.goto('/');
-  await expect(page.locator('h1')).toHaveText('Kafr El-Sheikh Wishes');
+  await expect(page.locator('h1')).toHaveText('Egyptian Wishes');
   await expect.poll(() => page.locator('#c').evaluate((canvas) => {
     const context = canvas.getContext('2d');
     const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
@@ -89,17 +89,22 @@ test('mobile visitor flow, admin confirmation, and live wish display', async ({ 
   await page.getByRole('button', { name: 'اكتب أمنيتك' }).click();
   await page.locator('#wt').fill('أتمنى الخير لكل أهل بلدنا');
   await page.locator('#wn').fill('نور');
+  const cairoChoice = page.locator('#governorate-strip').getByRole('button', { name: 'القاهرة', exact: true });
+  await cairoChoice.click();
+  await expect(page.locator('#governorate')).toHaveValue('القاهرة');
+  await page.locator('#governorate').fill('المنوفية');
   await page.locator('#wp').fill('01012345678');
   await page.locator('#wc').locator('.tier').nth(1).click();
-  await expect(page.locator('#cash-price')).toHaveText('40');
-  await expect(page.locator('.cash-number')).toHaveText('01028870568');
+  expect(await page.locator('#wc .tier span').allTextContents()).toEqual(['100 جنيه', '100 جنيه', '100 جنيه']);
+  await expect(page.locator('#cash-price')).toHaveText('100');
+  await expect(page.locator('.cash-number')).toHaveText('01043668450');
   await expect(page.locator('.pay-order-note')).toContainText('بعد تأكيد الدفع');
   await expect(page.locator('#go')).toBeEnabled();
   await page.locator('#go').click();
   await expect(page.locator('#pay')).toBeVisible();
-  await expect(page.locator('#pa')).toHaveText('40');
+  await expect(page.locator('#pa')).toHaveText('100');
   await expect(page.locator('#pc')).toHaveText('KS-1A2B3C4D5E');
-  expect(state.createBody).toMatchObject({ name: 'نور', color: 1, phone: '01012345678' });
+  expect(state.createBody).toMatchObject({ name: 'نور', governorate: 'المنوفية', color: 1, phone: '01012345678' });
 
   const wheelCancelled = await page.locator('#c').evaluate((canvas) => {
     const event = new WheelEvent('wheel', { deltaY: -250, clientX: 190, clientY: 420, cancelable: true });
@@ -117,6 +122,7 @@ test('mobile visitor flow, admin confirmation, and live wish display', async ({ 
   await admin.locator('#password').fill('test-password');
   await admin.locator('#login-form button[type="submit"]').click();
   await expect(admin.locator('#dashboard')).toBeVisible();
+  await expect(admin.locator('#orders')).toContainText('المنوفية');
   await admin.locator('.confirm').click();
   await expect(admin.locator('#message')).toContainText('رقم الأمنية ١');
   await expect(page.locator('#rt')).toContainText('أتمنى الخير لكل أهل بلدنا', { timeout: 14000 });

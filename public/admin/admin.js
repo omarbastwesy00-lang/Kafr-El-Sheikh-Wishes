@@ -121,7 +121,7 @@ function renderRows() {
   const pending = allOrders.filter((order) => order.status === 'pending')
     .sort((a, b) => Number(a.queue_seq) - Number(b.queue_seq));
   const visible = allOrders.filter((order) => order.status === activeStatus)
-    .filter((order) => !search || [order.code, order.name, order.sender_phone].some((value) => String(value || '').toLocaleLowerCase().includes(search)))
+    .filter((order) => !search || [order.code, order.name, order.governorate, order.sender_phone].some((value) => String(value || '').toLocaleLowerCase().includes(search)))
     .sort((a, b) => (new Date(a.created_at) - new Date(b.created_at)) * (oldestFirst ? 1 : -1));
   rows.replaceChildren();
   for (const order of visible) rows.append(createRow(order, pending));
@@ -140,6 +140,7 @@ function createRow(order, pending) {
   codeBlock.append(code, status);
   row.append(makeCell(codeBlock));
   row.append(makeCell(order.name));
+  row.append(makeCell(order.governorate || 'غير محددة'));
 
   const wishBlock = document.createElement('div');
   wishBlock.className = 'wish-cell';
@@ -295,7 +296,7 @@ document.getElementById('search').addEventListener('input', renderRows);
 document.getElementById('sort').addEventListener('change', renderRows);
 document.getElementById('refresh').addEventListener('click', loadData);
 document.getElementById('export').addEventListener('click', () => {
-  const fields = ['code', 'name', 'wish', 'color', 'price', 'sender_phone', 'status', 'created_at', 'confirmed_at', 'no', 'admin_note'];
+  const fields = ['code', 'name', 'governorate', 'wish', 'color', 'price', 'sender_phone', 'status', 'created_at', 'confirmed_at', 'no', 'admin_note'];
   const quote = (value) => `"${String(value ?? '').replaceAll('"', '""')}"`;
   const csv = '\ufeff' + [fields.join(','), ...allOrders.map((order) => fields.map((field) => quote(order[field])).join(','))].join('\r\n');
   const link = document.createElement('a');

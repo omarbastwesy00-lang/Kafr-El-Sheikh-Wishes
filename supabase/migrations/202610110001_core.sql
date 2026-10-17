@@ -12,7 +12,7 @@ create table public.orders (
   name text not null check (char_length(name) between 2 and 30),
   wish text not null check (char_length(wish) between 3 and 140),
   color smallint not null check (color between 0 and 2),
-  price integer not null check ((color = 0 and price = 20) or (color = 1 and price = 40) or (color = 2 and price = 60)),
+  price integer not null check (price = 100 or (color = 0 and price = 20) or (color = 1 and price = 40) or (color = 2 and price = 60)),
   sender_phone text check (sender_phone is null or sender_phone ~ '^01[0125][0-9]{8}$'),
   status text not null default 'pending' check (status in ('pending', 'confirmed', 'expired', 'rejected')),
   created_at timestamptz not null default clock_timestamp(),
@@ -92,7 +92,7 @@ begin
   if (select count(*) from private.order_attempts where ip_hash = p_ip_hash and created_at >= now() - interval '1 hour') >= 100 then
     raise exception using errcode = 'P0001', message = 'ip_rate_limited';
   end if;
-  order_price := case p_color when 0 then 20 when 1 then 40 else 60 end;
+  order_price := 100;
   loop
     next_code := 'KS-' || upper(encode(extensions.gen_random_bytes(5), 'hex'));
     exit when not exists (select 1 from public.orders o where o.code = next_code);

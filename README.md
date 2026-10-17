@@ -1,4 +1,4 @@
-# Kafr El-Sheikh Wishes
+# Egyptian Wishes
 
 A single-page Arabic/RtL wishes experience with a Supabase/Postgres backend and a private admin console. The public artwork, copy, motion, zoom/pan, sound behavior, and seeded-RNG slot map come from the supplied HTML; there are no sample wishes in production.
 
@@ -67,7 +67,7 @@ Vite embeds `VITE_` values at build time: if using `npm.cmd run preview`, rebuil
 
 ### Manual Vodafone Cash confirmation
 
-A payment gateway callback is not part of this project. A person with the admin account must compare the incoming Vodafone Cash transfer against the sender number and amount shown for the pending order. The order's price is fixed by Postgres from the selected color (20/40/60 EGP); the browser cannot set it. Open `/admin/`, search by code/phone/name, verify the transfer in the Vodafone Cash account, then choose **تأكيد**. The confirmation RPC assigns the next number inside one locked database transaction. An expired request can still be confirmed; a rejected one cannot. Do not confirm based only on a screenshot or the visitor's claim.
+A payment gateway callback is not part of this project. A person with the admin account must compare the incoming Vodafone Cash transfer against the sender number and amount shown for the pending order. The order's price is fixed by Postgres at 100 EGP for every color; the browser cannot set it. Open `/admin/`, search by code/phone/name, verify the transfer in the Vodafone Cash account, then choose **تأكيد**. The confirmation RPC assigns the next number inside one locked database transaction. An expired request can still be confirmed; a rejected one cannot. Do not confirm based only on a screenshot or the visitor's claim.
 
 ### Backups and data retention
 
@@ -142,7 +142,7 @@ npm.cmd run dev
 
 ### مراجعة تحويل فودافون كاش
 
-لا يوجد تأكيد آلي من مزود الدفع. يراجع المسؤول التحويل يدويًا في حساب فودافون كاش، ويطابق رقم المرسل والمبلغ مع الطلب، ثم يفتح `/admin/` ويختار **تأكيد**. السعر يُحسب في قاعدة البيانات حسب اللون (20/40/60 جنيهًا)، والرقم النهائي يُخصص ذريًا عند التأكيد فقط. يمكن تأكيد الطلب المنتهي، ولا يمكن تأكيد المرفوض. لا تعتمد على صورة إيصال وحدها.
+لا يوجد تأكيد آلي من مزود الدفع. يراجع المسؤول التحويل يدويًا في حساب فودافون كاش، ويطابق رقم المرسل والمبلغ مع الطلب، ثم يفتح `/admin/` ويختار **تأكيد**. السعر 100 جنيه لكل الألوان، والرقم النهائي يُخصص ذريًا عند التأكيد فقط. يمكن تأكيد الطلب المنتهي، ولا يمكن تأكيد المرفوض. لا تعتمد على صورة إيصال وحدها.
 
 ## Backend Rules
 

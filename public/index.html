@@ -5,18 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#03080f">
-<meta name="description" content="ألف أمنية تفتح باب النور في كفر الشيخ. اكتب أمنيتك وساهم في فتح الباب.">
+<meta name="description" content="ألف أمنية تفتح باب النور في مصر. اكتب أمنيتك وساهم في فتح الباب.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Kafr El-Sheikh Wishes">
-<meta property="og:description" content="ألف أمنية تفتح باب النور في كفر الشيخ.">
+<meta property="og:title" content="Egyptian Wishes">
+<meta property="og:description" content="ألف أمنية تفتح باب النور في مصر.">
 <meta property="og:image" content="https://YOUR_DOMAIN/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Kafr El-Sheikh Wishes">
-<meta name="twitter:description" content="ألف أمنية تفتح باب النور في كفر الشيخ.">
+<meta name="twitter:title" content="Egyptian Wishes">
+<meta name="twitter:description" content="ألف أمنية تفتح باب النور في مصر.">
 <meta name="twitter:image" content="https://YOUR_DOMAIN/og-image.png">
-<title>Kafr El-Sheikh Wishes</title>
+<title>Egyptian Wishes</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="canonical" href="https://YOUR_DOMAIN/">
 <link rel="stylesheet" href="/styles.css">
@@ -24,7 +24,7 @@
 <body>
 <canvas id="c" aria-label="باب النور وألف أمنية حواليه"></canvas>
 <header>
-  <h1>Kafr El-Sheikh Wishes</h1>
+  <h1>Egyptian Wishes</h1>
   <p class="sub">ألف أمنية تفتح باب النور</p>
   <div class="cnt"><div class="d"><b id="n">000</b><span class="t">/ 1,000</span></div><p id="left"></p></div>
 </header>
@@ -55,16 +55,25 @@
     <textarea id="wt" maxlength="140" placeholder="أتمنى..." aria-label="نص الأمنية"></textarea>
     <p class="lbl" style="font-size:14px;margin:0 0 8px">اختار لون أمنيتك</p><div class="tiers" id="wc"></div>
     <div class="pay-instructions" aria-live="polite">
-      <p>حوّل <b id="cash-price">20</b> جنيه فودافون كاش إلى</p>
-      <bdi class="cash-number" dir="ltr">01028870568</bdi>
+      <p>حوّل <b id="cash-price">100</b> جنيه فودافون كاش إلى</p>
+      <div class="cash-number-row">
+        <bdi class="cash-number" dir="ltr">01043668450</bdi>
+        <button class="copy-cash" id="copy-cash" type="button" aria-label="نسخ رقم فودافون كاش" title="نسخ رقم فودافون كاش"><span class="copy-icon" aria-hidden="true"></span></button>
+      </div>
       <p class="pay-order-note">بعد تأكيد الدفع، تظهر أمنيتك على اللوحة في النجمة المخصصة لها حسب ترتيب التأكيد.</p>
     </div>
-    <input id="wn" maxlength="30" placeholder="اسمك" aria-label="اسمك"><input id="wp" inputmode="tel" maxlength="11" placeholder="رقم فودافون كاش اللي هتحوّل منه" aria-label="رقم فودافون كاش الذي ستحول منه">
+    <input id="wn" maxlength="30" placeholder="اسمك" aria-label="اسمك">
+    <label class="governorate-label" for="governorate">محافظتك</label>
+    <input id="governorate" list="governorate-options" maxlength="40" placeholder="اكتب محافظتك أو اختار من الشريط" autocomplete="off">
+    <datalist id="governorate-options"></datalist>
+    <p class="governorate-hint">محافظات مصر</p>
+    <div class="governorate-strip" id="governorate-strip" role="group" aria-label="اختيار المحافظة"></div>
+    <input id="wp" inputmode="tel" maxlength="11" placeholder="رقم فودافون كاش اللي هتحوّل منه" aria-label="رقم فودافون كاش الذي ستحول منه">
     <input id="website" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
     <p id="api-message" class="notice" role="alert" hidden></p>
     <button class="go" id="go" disabled>تابع للدفع</button>
   </div>
-  <div id="pay" hidden><p class="lbl">وصلنا طلبك ✦</p><p class="pm">حوّل <b id="pa"></b> جنيه على فودافون كاش للرقم:</p><button class="pnum" id="pn">01028870568</button><p class="pm">من الرقم اللي كتبته (<span id="ps"></span>)، وكود طلبك <b id="pc"></b></p><p class="pm">أول ما طلبك يتأكد هتكون أمنيتك رقم <b id="pq"></b> على اللوحة، وهتظهر في المكان اللي شفتها رايحاله. <span style="color:var(--mute);font-size:13px">(الرقم بيتثبت لحظة تأكيد الدفع)</span></p><p id="tracking" class="note" role="status"></p><p class="note"><a href="/terms.html">الشروط والخصوصية</a></p><button class="go" id="pd">تمام</button></div>
+  <div id="pay" hidden><p class="lbl">وصلنا طلبك ✦</p><p class="pm">حوّل <b id="pa"></b> جنيه على فودافون كاش للرقم:</p><button class="pnum" id="pn">01043668450</button><p class="pm">من الرقم اللي كتبته (<span id="ps"></span>)، وكود طلبك <b id="pc"></b></p><p class="pm">أول ما طلبك يتأكد هتكون أمنيتك رقم <b id="pq"></b> على اللوحة، وهتظهر في المكان اللي شفتها رايحاله. <span style="color:var(--mute);font-size:13px">(الرقم بيتثبت لحظة تأكيد الدفع)</span></p><p id="tracking" class="note" role="status"></p><p class="note"><a href="/terms.html">الشروط والخصوصية</a></p><button class="go" id="pd">تمام</button></div>
 </div>
 <script type="module" src="/app.js"></script>
 </body>

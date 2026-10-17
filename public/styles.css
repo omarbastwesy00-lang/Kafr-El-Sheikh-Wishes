@@ -41,8 +41,22 @@ button:focus-visible,textarea:focus-visible,input:focus-visible{outline:2px soli
 #write>.lbl:first-child,#pay>.lbl:first-child{display:flex;align-items:center;min-height:44px;padding-inline-end:58px;line-height:1.5}
 .pay-instructions{margin:2px 0 10px;padding:9px 0;border-block:1px solid rgba(244,200,116,.24);text-align:center}
 .pay-instructions p{margin:2px 0;font-size:14px;line-height:1.55}
+.cash-number-row{display:flex;align-items:center;justify-content:center;gap:9px;direction:ltr}
 .cash-number{display:inline-block;margin:2px 0;color:var(--gold);font-size:22px;font-weight:700;letter-spacing:.04em}
+.copy-cash{display:grid;place-items:center;width:36px;height:36px;flex:0 0 36px;padding:0;border:1px solid rgba(244,200,116,.38);border-radius:8px;background:rgba(244,200,116,.08);color:var(--gold);cursor:pointer}
+.copy-cash:hover,.copy-cash:focus-visible{border-color:var(--gold);background:rgba(244,200,116,.16);outline:none}
+.copy-icon{position:relative;width:18px;height:18px;display:block}
+.copy-icon::before,.copy-icon::after{content:"";position:absolute;width:9px;height:11px;border:1.5px solid currentColor;border-radius:2px}
+.copy-icon::before{top:1px;left:6px}
+.copy-icon::after{top:5px;left:2px;background:#07131c}
+.copy-cash.copied .copy-icon::before{top:5px;left:4px;width:8px;height:5px;border:0;border-left:2px solid currentColor;border-bottom:2px solid currentColor;border-radius:0;transform:rotate(-45deg)}
+.copy-cash.copied .copy-icon::after{display:none}
 .pay-instructions .pay-order-note{color:var(--mute);font-size:13px}
+.governorate-label{display:block;margin:0 0 6px;color:var(--sand);font-size:14px;font-weight:700}
+.governorate-hint{margin:0 0 5px;color:var(--mute);font-size:12px;text-align:right}
+.governorate-strip{display:flex;gap:7px;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x proximity;padding:2px 1px 9px;margin:-2px 0 8px;direction:rtl;touch-action:pan-x;scrollbar-width:thin;scrollbar-color:rgba(244,200,116,.5) transparent}
+.governorate-choice{flex:0 0 auto;min-height:36px;padding:6px 12px;border:1px solid rgba(255,255,255,.2);border-radius:18px;background:rgba(255,255,255,.05);color:var(--sand);font-size:13px;white-space:nowrap;scroll-snap-align:start}
+.governorate-choice:hover,.governorate-choice.selected{border-color:var(--gold);background:rgba(244,200,116,.16);color:var(--gold)}
 textarea,input{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);border-radius:14px;color:var(--sand);font:inherit;font-size:17px;padding:12px 14px;margin-bottom:10px;user-select:text;-webkit-user-select:text}
 textarea{height:92px;resize:none;line-height:1.7}
 .go{width:100%;border:0;border-radius:14px;padding:14px;font-weight:700;font-size:17px;min-height:50px;background:var(--lagoon);color:#06222a}

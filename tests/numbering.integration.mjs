@@ -36,6 +36,7 @@ async function run() {
       body: {
         name: `اختبار ${index + 1}`,
         wish: `اختبار تزامن ${runId} ${suffix} أمنية رقم ${index + 1}`,
+        governorate: 'القاهرة',
         color: index % 3,
         phone: `0109${String(index + 1).padStart(7, '0')}`,
         website: ''
@@ -79,7 +80,7 @@ async function run() {
   const anonymous = createClient(url, anonKey, { auth: { persistSession: false } });
   const directRead = await anonymous.from('orders').select('sender_phone,code,status').limit(1);
   assert.ok(directRead.error, 'Anon must not read the orders table.');
-  const directWrite = await anonymous.from('orders').insert({ code: 'KS-FFFFFFFFFF', name: 'No', wish: 'Not allowed', color: 0, price: 20, sender_phone: '01012345678' });
+  const directWrite = await anonymous.from('orders').insert({ code: 'KS-FFFFFFFFFF', name: 'No', wish: 'Not allowed', color: 0, price: 100, sender_phone: '01012345678' });
   assert.ok(directWrite.error, 'Anon must not write the orders table.');
   const directConfirm = await anonymous.rpc('confirm_order', { p_id: ids[0] });
   assert.ok(directConfirm.error, 'Anon must not confirm an order.');
